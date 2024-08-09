@@ -1,46 +1,51 @@
 package com.nerzon.course.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nerzon.course.entity.Cat;
+import com.nerzon.course.repository.CatRepo;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+@Slf4j
+@RequiredArgsConstructor
 @RestController
 public class MainController {
     @Autowired
+    private CatRepo catRepo;
+    @Autowired
     private ObjectMapper objectMapper;
 
-    @GetMapping("api/main")
-    public String mainListener() {
-        return "Hello World!";
+    @PostMapping("/api/add")
+    public void addCat(@RequestBody Cat cat) {
+        log.info("New row: " + catRepo.save(cat));
     }
 
-    @GetMapping("api/cat")
-    public String giveCat() {
-        Cat cat = new Cat("Барсик", 5, 10);
-        String jsonData = null;
-        try {
-            jsonData = objectMapper.writeValueAsString(cat);
-        } catch (JsonProcessingException e) {
-            System.out.println("Error with cat!");
-        }
-        return jsonData;
+    @SneakyThrows // исключение просто выбросится - без обработки
+    @GetMapping("/api/all")
+    public List<Cat> getAll() {
+        return catRepo.findAll();
     }
 
+    @GetMapping("/api")
+    public Cat getCat(@RequestParam int id) {
+        return catRepo.findById(id).orElseThrow();
+    }
 
-    @PostMapping("/api/special")
-    public String giveSpecialCat(@RequestParam String name){
-        Cat cat = new Cat(name, 5, 10);
-        String jsonData = null;
-        try {
-            jsonData = objectMapper.writeValueAsString(cat);
-        } catch (JsonProcessingException e) {
-            System.out.println("Error with cat!");
+    @DeleteMapping("/api")
+    public void deleteCat(@RequestParam int id) {
+        catRepo.deleteById(id);
+    }
+
+    @PutMapping("/api")
+    public String changeCat(@RequestBody Cat cat) {
+        if (!catRepo.existsById(cat.getId())) {
+            return "No such row!";
         }
-        return jsonData;
+        return catRepo.save(cat).toString();
     }
 }

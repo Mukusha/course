@@ -4,17 +4,35 @@
 **<details><summary>Запросы</summary>**
 
 ```java
+Cat:
+
+        {
+        "id": 1,
+        "name": "Барсик",
+        "age": 10,
+        "weight": 100
+        }
+```
+
+```java
 Главная страница
 
 http://localhost:8080/api
 ```
 
 **`GET`**
-> **/api/main** - Hello World!
-> **/api/cat** - Возвращает кота
+> **/api/all** - возвращает всех котов
 
-> **`POST`**
-> **/api/special?name=name** - меняет коту имя
+> **/api** - возвращает кота по id
+
+**`POST`**
+> **/api/add** - создает кота
+
+ **`PUT`**
+> **/api** - изменяет данные кота
+ 
+**`DELETE`**
+> **/api** - удаляет кота по id
 
 </details>
 
@@ -22,8 +40,7 @@ http://localhost:8080/api
 
 - [X] **Лекция №1** - Вводная
 
-
-
+- [X] **Лекция №2** - Интегрируем PostgreSQL в REST приложение на Java
 
 </details>
 
